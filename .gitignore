@@ -1,0 +1,36 @@
+# User/system outputs
+/.idea/
+.DS_Store
+
+# Dotnet
+/**/bin/
+/**/obj/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+/backend/.vs/
+/backend/**/Properties/launchSettings.json.user
+
+# Frontend / Node
+node_modules/
+/frontend/dist/
+/frontend/.cache/
+/frontend/npm-debug.log*
+/frontend/yarn-debug.log*
+/frontend/yarn-error.log*
+/frontend/pnpm-debug.log*
+
+# Environment and secrets
+.env
+.env.*
+!.env.example
+
+# Docker
+/.docker/
+/docker-compose.override.yml
+/.gradle/
+
+# Logs
+*.log
+
