@@ -5,7 +5,7 @@
   - Frontend: React (TypeScript preferred), route-based UI.
   - Backend: ASP.NET Core Web API (.NET 8+), clean layered architecture.
   - Auth: Separate entry experiences for **buyer/user** and **seller/admin**.
-  - Data: SQL database (MSSQL or PostgreSQL, with Dockerized local dev environment).
+  - Data: PostgreSQL database, with Dockerized local dev environment.
   - Media: Cloudinary for image upload, transformation, and delivery.
 
 ## Recommended Repository Layout
@@ -48,9 +48,7 @@
 - Use EF Core with migrations and dependency injection.
 
 ## Local Database Strategy (Docker)
-- Use database profiles:
-  - `postgres` (PostgreSQL)
-- Keep both options configurable, but run one profile at a time during development.
+- Use PostgreSQL as the only database for development.
 - Required environment variables:
   - `ConnectionStrings__DefaultConnection` in backend app settings.
 

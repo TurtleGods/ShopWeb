@@ -1,0 +1,45 @@
+version: "3.9"
+
+services:
+  api:
+    build: ./backend
+    container_name: shopping-api
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://+:5000
+      - ConnectionStrings__DefaultConnection=${ConnectionStrings__DefaultConnection}
+      - Jwt__Key=${JWT_KEY}
+      - Jwt__Issuer=ShoppingApi
+      - Jwt__Audience=ShoppingClient
+      - CLOUDINARY_CLOUD_NAME=${CLOUDINARY_CLOUD_NAME}
+      - CLOUDINARY_API_KEY=${CLOUDINARY_API_KEY}
+      - CLOUDINARY_API_SECRET=${CLOUDINARY_API_SECRET}
+    ports:
+      - "5000:5000"
+    depends_on:
+      - postgres
+
+  web:
+    build: ./frontend
+    container_name: shopping-web
+    environment:
+      - VITE_API_URL=http://localhost:5000
+    ports:
+      - "3000:80"
+    depends_on:
+      - api
+
+  postgres:
+    image: postgres:16
+    container_name: shopping-postgres
+    environment:
+      - POSTGRES_DB=${POSTGRES_DB:-shop}
+      - POSTGRES_USER=${POSTGRES_USER:-shop_user}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-shop_password}
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:
