@@ -47,7 +47,11 @@ builder.Services.AddScoped<IJwtTokenService, JwtTokenService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IImageStorageService, CloudinaryImageService>();
 
-var jwtKey = builder.Configuration["Jwt:Key"] ?? "change_me_with_very_long_secret";
+var jwtKey = builder.Configuration["Jwt:Key"];
+if (string.IsNullOrWhiteSpace(jwtKey))
+{
+    throw new InvalidOperationException("Jwt:Key is missing. Set Jwt:Key in appsettings or env Jwt__Key.");
+}
 var jwtIssuer = builder.Configuration["Jwt:Issuer"] ?? "ShoppingApi";
 var jwtAudience = builder.Configuration["Jwt:Audience"] ?? "ShoppingClient";
 var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey));
