@@ -1,6 +1,7 @@
 using System.Linq;
 using System.Security.Claims;
 using System.Threading;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -77,7 +78,7 @@ public sealed class ProductsController : ControllerBase
         _db.Products.Add(product);
         await _db.SaveChangesAsync(ct);
 
-        return Created($"/api/v1/products/{product.Id}", product);
+        return Created($"/api/products/{product.Id}", product);
     }
 
     [HttpPost("{productId:int}/images")]

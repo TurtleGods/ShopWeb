@@ -15,13 +15,13 @@
    - `docker compose up --build`
 
 ## API routes
-- `POST /api/v1/auth/register`
-- `POST /api/v1/auth/login`
-- `GET /api/v1/products`
-- `POST /api/v1/products` (Seller only)
-- `POST /api/v1/products/{productId}/images` (Seller only)
-- `GET /api/v1/orders/seller` (Seller only)
-- `POST /api/v1/orders/buyer`
+- `POST /api/auth/register`
+- `POST /api/auth/login`
+- `GET /api/products`
+- `POST /api/products` (Seller only)
+- `POST /api/products/{productId}/images` (Seller only)
+- `GET /api/orders/seller` (Seller only)
+- `POST /api/orders/buyer`
 
 ## Frontend routes
 - `/login`
