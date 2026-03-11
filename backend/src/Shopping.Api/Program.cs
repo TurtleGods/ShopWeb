@@ -1,7 +1,15 @@
+using System;
+using System.Linq;
 using System.Text;
+using System.Threading;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 using Shopping.Application.Contracts.Auth;
 using Shopping.Application.Contracts.Products;
@@ -11,6 +19,7 @@ using Shopping.Domain.Enums;
 using Shopping.Infrastructure.Data;
 using Shopping.Infrastructure.Security;
 using Shopping.Infrastructure.Services;
+
 
 var builder = WebApplication.CreateBuilder(args);
 

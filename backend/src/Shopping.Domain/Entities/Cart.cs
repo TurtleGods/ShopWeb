@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+
 namespace Shopping.Domain.Entities;
 
 public sealed class Cart : BaseEntity

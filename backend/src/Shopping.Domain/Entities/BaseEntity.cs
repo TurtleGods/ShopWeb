@@ -1,3 +1,5 @@
+using System;
+
 namespace Shopping.Domain.Entities;
 
 public abstract class BaseEntity

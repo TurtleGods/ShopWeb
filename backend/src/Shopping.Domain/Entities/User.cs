@@ -1,4 +1,5 @@
 using Shopping.Domain.Enums;
+using System.Collections.Generic;
 
 namespace Shopping.Domain.Entities;
 
