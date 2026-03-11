@@ -4,7 +4,6 @@ using System.Security.Claims;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using Shopping.Application.Services;
@@ -55,4 +54,3 @@ public sealed class JwtTokenService : IJwtTokenService
         return Task.FromResult(tokenString);
     }
 }
-

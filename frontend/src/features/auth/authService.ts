@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 
-type LoginRequest = {
+export type LoginRequest = {
   email: string;
   password: string;
   role: 'Buyer' | 'Seller';
@@ -30,7 +30,7 @@ export function useProducts(role: 'Buyer' | 'Seller') {
   const loadProducts = async () => {
     setLoading(true);
     const token = JSON.parse(localStorage.getItem('shop:web:auth') || '{}')?.token;
-  const response = await fetch(`${API_BASE}/api/v1/products`, {
+  const response = await fetch(`${API_BASE}/api/products`, {
       headers: token ? { Authorization: `Bearer ${token}` } : undefined
     });
     const data = await response.json();
@@ -39,7 +39,7 @@ export function useProducts(role: 'Buyer' | 'Seller') {
   };
 
   const createProduct = async (payload: ProductCreateRequest, token: string) => {
-    await fetch(`${API_BASE}/api/v1/products`, {
+    await fetch(`${API_BASE}/api/products`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
       body: JSON.stringify(payload)
@@ -57,7 +57,7 @@ export function useProducts(role: 'Buyer' | 'Seller') {
 }
 
 export async function login(request: LoginRequest): Promise<ApiResponse> {
-  const response = await fetch(`${API_BASE}/api/v1/auth/login`, {
+  const response = await fetch(`${API_BASE}/api/auth/login`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(request)
@@ -66,7 +66,7 @@ export async function login(request: LoginRequest): Promise<ApiResponse> {
 }
 
 export async function register(request: LoginRequest & { fullName: string; storeName?: string; role: 'Buyer' | 'Seller' }) {
-  const response = await fetch(`${API_BASE}/api/v1/auth/register`, {
+  const response = await fetch(`${API_BASE}/api/auth/register`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(request)
