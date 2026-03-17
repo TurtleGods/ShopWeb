@@ -7,10 +7,10 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Shopping.Application.Contracts.Products;
+using Shopping.Application.Services;
 using Shopping.Domain.Entities;
 using Shopping.Domain.Enums;
 using Shopping.Infrastructure.Data;
-using Shopping.Infrastructure.Services;
 
 namespace Shopping.Api.Controllers;
 

@@ -4,7 +4,9 @@ using System.Linq;
 using Shopping.Application.Contracts.Auth;
 using Shopping.Application.Services;
 using Shopping.Domain.Entities;
+using Shopping.Infrastructure.Interfaces;
 using Shopping.Infrastructure.Security;
+using Shopping.Domain.Enums;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -24,7 +26,7 @@ public sealed class AuthService : IAuthService
     public async Task<AuthResult> LoginAsync(LoginRequest request, CancellationToken ct = default)
     {
         var user = await _userManager.Users
-            .FirstOrDefaultAsync(x => x.Email == request.Email && x.Role == request.Role && x.IsActive, ct);
+            .FirstOrDefaultAsync(x => x.Email == request.Email && x.IsActive, ct);
 
         if (user is null)
         {
@@ -43,22 +45,24 @@ public sealed class AuthService : IAuthService
 
     public async Task<AuthResult> RegisterAsync(RegisterRequest request, CancellationToken ct = default)
     {
+        var role = string.IsNullOrWhiteSpace(request.StoreName) ? UserRole.Buyer : UserRole.Seller;
+
         var exists = await _userManager.Users.AnyAsync(
-            x => x.Email == request.Email && x.Role == request.Role,
+            x => x.Email == request.Email,
             ct);
 
         if (exists)
         {
-            return AuthResult.Fail("Email already exists for this role.");
+            return AuthResult.Fail("Email already exists.");
         }
 
         var user = new User
         {
-            UserName = $"{request.Role}:{request.Email}",
+            UserName = request.Email,
             Email = request.Email,
             FullName = request.FullName,
             StoreName = request.StoreName,
-            Role = request.Role
+            Role = role
         };
 
         var result = await _userManager.CreateAsync(user, request.Password);

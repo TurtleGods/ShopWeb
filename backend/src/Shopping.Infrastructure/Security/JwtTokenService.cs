@@ -6,15 +6,10 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
-using Shopping.Application.Services;
 using Shopping.Domain.Entities;
+using Shopping.Infrastructure.Interfaces;
 
 namespace Shopping.Infrastructure.Security;
-
-public interface IJwtTokenService
-{
-    Task<string> CreateTokenAsync(User user, CancellationToken ct = default);
-}
 
 public sealed class JwtTokenService : IJwtTokenService
 {
@@ -27,10 +22,13 @@ public sealed class JwtTokenService : IJwtTokenService
 
     public Task<string> CreateTokenAsync(User user, CancellationToken ct = default)
     {
-        var key = _configuration["Jwt:Key"] ?? "change_me_to_a_long_secure_secret_32_chars_min";
-        var issuer = _configuration["Jwt:Issuer"] ?? "ShoppingApi";
-        var audience = _configuration["Jwt:Audience"] ?? "ShoppingClient";
-        var ttlMinutes = int.TryParse(_configuration["Jwt:ExpirationMinutes"], out var parsed) ? parsed : 60;
+        var key = _configuration["Jwt:Key"]
+            ?? throw new InvalidOperationException("Jwt:Key is missing.");
+        var issuer = _configuration["Jwt:Issuer"];
+        var audience = _configuration["Jwt:Audience"];
+        var ttlMinutes = int.TryParse(_configuration["Jwt:ExpirationMinutes"], out var parsed)
+            ? parsed
+            : 60;
 
         var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(key));
         var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
@@ -38,7 +36,7 @@ public sealed class JwtTokenService : IJwtTokenService
         var claims = new[]
         {
             new Claim(JwtRegisteredClaimNames.Sub, user.Id.ToString()),
-            new Claim(ClaimTypes.Email, user.Email),
+            new Claim(ClaimTypes.Email, user.Email ?? string.Empty),
             new Claim(ClaimTypes.Role, user.Role.ToString()),
             new Claim("full_name", user.FullName)
         };

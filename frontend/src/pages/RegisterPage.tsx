@@ -1,6 +1,6 @@
 import { FormEvent, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { LoginRequest, register } from '../features/auth/authService';
+import { register } from '../features/auth/authService';
 import { useAuth } from '../features/auth/AuthContext';
 
 function RegisterPage() {
@@ -10,7 +10,6 @@ function RegisterPage() {
   const [password, setPassword] = useState('password');
   const [fullName, setFullName] = useState('New User');
   const [storeName, setStoreName] = useState('');
-  const [role, setRole] = useState<LoginRequest['role']>('Buyer');
   const [message, setMessage] = useState('');
 
   const onSubmit = async (event: FormEvent<HTMLFormElement>) => {
@@ -19,8 +18,7 @@ function RegisterPage() {
       email,
       password,
       fullName,
-      role,
-      storeName: role === 'Seller' ? storeName : undefined
+      storeName: storeName.trim() || undefined
     });
 
     if (!result.succeeded || !result.token || !result.role || !result.email) {
@@ -55,18 +53,13 @@ function RegisterPage() {
             <input value={fullName} onChange={(event) => setFullName(event.target.value)} required />
           </label>
           <label>
-            Register as
-            <select value={role} onChange={(event) => setRole(event.target.value as LoginRequest['role'])}>
-              <option value="Buyer">Buyer</option>
-              <option value="Seller">Seller</option>
-            </select>
+            Store name
+            <input
+              value={storeName}
+              onChange={(event) => setStoreName(event.target.value)}
+              placeholder="Leave blank for buyer account"
+            />
           </label>
-          {role === 'Seller' ? (
-            <label>
-              Store name
-              <input value={storeName} onChange={(event) => setStoreName(event.target.value)} required />
-            </label>
-          ) : null}
           {message && <p className="message">{message}</p>}
           <button type="submit">Continue</button>
         </form>

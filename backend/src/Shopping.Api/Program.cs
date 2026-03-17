@@ -1,13 +1,18 @@
-﻿using System.Text;
+﻿using System;
+using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 using Shopping.Application.Services;
 using Shopping.Domain.Entities;
 using Shopping.Domain.Enums;
 using Shopping.Infrastructure.Data;
+using Shopping.Infrastructure.Interfaces;
 using Shopping.Infrastructure.Security;
 using Shopping.Infrastructure.Services;
 

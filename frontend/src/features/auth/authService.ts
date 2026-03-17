@@ -3,7 +3,6 @@ import { useEffect, useState } from 'react';
 export type LoginRequest = {
   email: string;
   password: string;
-  role: 'Buyer' | 'Seller';
 };
 
 export type ProductCreateRequest = {
@@ -65,7 +64,7 @@ export async function login(request: LoginRequest): Promise<ApiResponse> {
   return response.json();
 }
 
-export async function register(request: LoginRequest & { fullName: string; storeName?: string; role: 'Buyer' | 'Seller' }) {
+export async function register(request: LoginRequest & { fullName: string; storeName?: string }) {
   const response = await fetch(`${API_BASE}/api/auth/register`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },

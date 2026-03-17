@@ -8,12 +8,11 @@ function LoginPage() {
   const { login: setAuth } = useAuth();
   const [email, setEmail] = useState('seller@example.com');
   const [password, setPassword] = useState('password');
-  const [role, setRole] = useState<'Buyer' | 'Seller'>('Seller');
   const [message, setMessage] = useState('');
 
   const onSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    const result = await login({ email, password, role });
+    const result = await login({ email, password });
     if (!result.succeeded || !result.token || !result.role || !result.email) {
       setMessage(result.message || 'Login failed');
       return;
@@ -35,13 +34,6 @@ function LoginPage() {
             Password
             <input value={password} type="password" onChange={(e) => setPassword(e.target.value)} required />
           </label>
-          <label>
-            Login as
-            <select value={role} onChange={(e) => setRole(e.target.value as 'Buyer' | 'Seller')}>
-              <option value="Buyer">Buyer</option>
-              <option value="Seller">Seller</option>
-            </select>
-          </label>
           {message && <p className="message">{message}</p>}
           <button type="submit">Continue</button>
         </form>
@@ -51,4 +43,3 @@ function LoginPage() {
 }
 
 export default LoginPage;
-
