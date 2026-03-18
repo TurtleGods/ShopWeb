@@ -78,7 +78,17 @@ public sealed class ProductsController : ControllerBase
         _db.Products.Add(product);
         await _db.SaveChangesAsync(ct);
 
-        return Created($"/api/products/{product.Id}", product);
+        return Created($"/api/products/{product.Id}", new
+        {
+            product.Id,
+            product.Name,
+            product.Description,
+            product.Price,
+            product.Stock,
+            product.IsPublished,
+            product.SellerId,
+            Images = new object[0]
+        });
     }
 
     [HttpPost("{productId:int}/images")]

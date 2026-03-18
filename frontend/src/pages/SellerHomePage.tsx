@@ -7,7 +7,7 @@ function SellerHomePage() {
   const { items, loading, createProduct } = useProducts('Seller');
   const [name, setName] = useState('New product');
   const [description, setDescription] = useState('A short description');
-  const [price, setPrice] = useState(29.9);
+  const [price, setPrice] = useState(10);
   const [stock, setStock] = useState(100);
 
   const submit = async (event: FormEvent<HTMLFormElement>) => {
@@ -41,7 +41,7 @@ function SellerHomePage() {
             <input
               value={price}
               type="number"
-              step="0.01"
+              step="1"
               onChange={(e) => setPrice(Number(e.target.value))}
             />
           </label>
