@@ -29,13 +29,15 @@
 - Use JWT-based authentication with role claims for at least:
   - `Buyer`
   - `Seller`
-  - Optional: `Admin`
+  - `Admin` as the super user role
 - API should expose role-gated endpoints:
   - User pages use public + `Buyer` scope endpoints.
   - Seller pages use `Seller` scope endpoints.
+  - Admin pages and APIs use `Admin` scope endpoints.
 - Frontend must prevent cross-role UI bleed:
   - login route chooses role-specific landing route.
   - seller-only pages hide/deny access if token role mismatch.
+  - admin-only pages hide/deny access if token role mismatch.
 - Data model should start with:
   - User
   - Role
@@ -46,6 +48,11 @@
   - Cart
   - Payment (stubbed for now)
 - Use EF Core with migrations and dependency injection.
+- Public registration only creates `Buyer` accounts.
+- `Seller` accounts are created and managed by `Admin`.
+- API controllers must not return EF Core entities directly.
+  - Always return DTOs, anonymous projections, or dedicated response models.
+  - This avoids lazy navigation leakage and JSON reference-cycle errors such as `Seller -> Products -> Seller`.
 
 ## Local Database Strategy (Docker)
 - Use PostgreSQL as the only database for development.
@@ -59,11 +66,14 @@ Suggested local compose services:
 - `web`: React dev server (later static build can be served separately in production).
 
 ## Cloudinary Strategy
-- Store credentials in environment variables:
-  - `CLOUDINARY_CLOUD_NAME`
-  - `CLOUDINARY_API_KEY`
-  - `CLOUDINARY_API_SECRET`
-  - Optional: `CLOUDINARY_SECURE=true`
+- Bind Cloudinary settings from configuration section `Cloudinary`.
+  - `Cloudinary:CloudName`
+  - `Cloudinary:ApiKey`
+  - `Cloudinary:ApiSecret`
+- Environment variables may override appsettings values using:
+  - `Cloudinary__CloudName`
+  - `Cloudinary__ApiKey`
+  - `Cloudinary__ApiSecret`
 - Upload flow:
   1. Frontend gets user image file and token.
   2. API receives upload request (seller context only).
@@ -75,7 +85,8 @@ Suggested local compose services:
   - `/login` (entry login with role select or role inferred from account)
   - `/buyer` -> user home/storefront
   - `/seller` -> seller dashboard
-  - `/register` (buyer and seller onboarding)
+  - `/admin` -> super user dashboard
+  - `/register` (buyer onboarding only)
 - Buyer pages
   - Product browse/search/detail
   - Cart/Checkout scaffolding
@@ -85,6 +96,10 @@ Suggested local compose services:
   - Inventory
   - Incoming orders
   - Sales summary
+- Admin pages
+  - User management
+  - Seller account creation
+  - User activation/deactivation
 
 ## Developer Defaults
 - Language: TypeScript for frontend, C# for backend.
@@ -92,6 +107,22 @@ Suggested local compose services:
 - API style: versioned endpoints (`/api/v1/...`) and DTO-centric contracts.
 - Error format: consistent JSON response with code/message.
 - Use HTTPS in local/dev flows where possible.
+- Application configuration should be read through ASP.NET Core configuration binding, not by manually reading config files from lower layers.
+- Development startup may use `launchSettings.json`, but environment variables override `appsettings.Development.json`.
+
+## Super Admin Bootstrap
+- Bootstrap the super user at application startup.
+- Read settings from configuration section `SuperAdmin`:
+  - `SuperAdmin:Email`
+  - `SuperAdmin:Password`
+  - `SuperAdmin:FullName`
+- Environment variable equivalents:
+  - `SuperAdmin__Email`
+  - `SuperAdmin__Password`
+  - `SuperAdmin__FullName`
+- If email or password is missing, skip bootstrap.
+- If the user exists, normalize it to active `Admin`.
+- If the user does not exist, create it automatically.
 
 ## Initial Task Order
 1. Scaffold backend API + domain/application/infrastructure.

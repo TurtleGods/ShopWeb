@@ -172,3 +172,17 @@ button {
 .message {
   color: #184d2f;
 }
+
+.image-preview-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.image-preview-chip {
+  padding: 8px 10px;
+  border: 1px solid #d7e2ff;
+  border-radius: 999px;
+  background: #f4f7ff;
+  font-size: 0.9rem;
+}

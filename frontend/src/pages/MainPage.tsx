@@ -23,7 +23,7 @@ function MainPage() {
   useEffect(() => {
     const load = async () => {
       try {
-        const response = await fetch(`${API_BASE}/api/v1/products`);
+        const response = await fetch(`${API_BASE}/api/products`);
         if (!response.ok) {
           throw new Error('產品清單載入失敗');
         }

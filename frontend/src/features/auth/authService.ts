@@ -12,6 +12,22 @@ export type ProductCreateRequest = {
   stock: number;
 };
 
+export type ProductImage = {
+  url: string;
+  publicId: string;
+};
+
+export type ProductSummary = {
+  id: number;
+  name: string;
+  description: string;
+  price: number;
+  stock: number;
+  isPublished: boolean;
+  sellerId: number;
+  images: ProductImage[];
+};
+
 export type UserSummary = {
   id: number;
   email: string;
@@ -32,7 +48,7 @@ type ApiResponse = {
 const API_BASE = import.meta.env.VITE_API_URL ?? '';
 
 export function useProducts(role: 'Buyer' | 'Seller') {
-  const [items, setItems] = useState<Array<any>>([]);
+  const [items, setItems] = useState<ProductSummary[]>([]);
   const [loading, setLoading] = useState(false);
 
   const loadProducts = async () => {
@@ -42,17 +58,41 @@ export function useProducts(role: 'Buyer' | 'Seller') {
       headers: token ? { Authorization: `Bearer ${token}` } : undefined
     });
     const data = await response.json();
-    setItems(data);
+    setItems(Array.isArray(data) ? data : []);
     setLoading(false);
   };
 
-  const createProduct = async (payload: ProductCreateRequest, token: string) => {
-    await fetch(`${API_BASE}/api/products`, {
+  const createProduct = async (payload: ProductCreateRequest, token: string): Promise<ProductSummary> => {
+    const response = await fetch(`${API_BASE}/api/products`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
       body: JSON.stringify(payload)
     });
-    await loadProducts();
+
+    if (!response.ok) {
+      const data = await response.json().catch(() => null);
+      throw new Error(data?.message || 'Failed to create product.');
+    }
+
+    return response.json();
+  };
+
+  const uploadProductImage = async (productId: number, file: File, token: string): Promise<ProductImage> => {
+    const formData = new FormData();
+    formData.append('file', file);
+
+    const response = await fetch(`${API_BASE}/api/products/${productId}/images`, {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${token}` },
+      body: formData
+    });
+
+    if (!response.ok) {
+      const data = await response.json().catch(() => null);
+      throw new Error(data?.message || `Failed to upload image ${file.name}.`);
+    }
+
+    return response.json();
   };
 
   useEffect(() => {
@@ -61,7 +101,7 @@ export function useProducts(role: 'Buyer' | 'Seller') {
     }
   }, [role]);
 
-  return { items, loading, loadProducts, createProduct };
+  return { items, loading, loadProducts, createProduct, uploadProductImage };
 }
 
 export async function login(request: LoginRequest): Promise<ApiResponse> {
