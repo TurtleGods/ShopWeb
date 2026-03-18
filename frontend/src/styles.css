@@ -128,3 +128,47 @@ button {
   margin-bottom: 8px;
   background: #edf2ff;
 }
+
+.admin-page {
+  width: min(960px, 100%);
+}
+
+.admin-form {
+  margin-top: 18px;
+}
+
+.admin-section {
+  margin-top: 28px;
+}
+
+.admin-section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.user-list {
+  display: grid;
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.user-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 14px 16px;
+  border: 1px solid #d7e2ff;
+  border-radius: 12px;
+  background: #fff;
+}
+
+.user-card p {
+  margin: 4px 0 0;
+}
+
+.message {
+  color: #184d2f;
+}

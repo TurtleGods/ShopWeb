@@ -45,8 +45,6 @@ public sealed class AuthService : IAuthService
 
     public async Task<AuthResult> RegisterAsync(RegisterRequest request, CancellationToken ct = default)
     {
-        var role = string.IsNullOrWhiteSpace(request.StoreName) ? UserRole.Buyer : UserRole.Seller;
-
         var exists = await _userManager.Users.AnyAsync(
             x => x.Email == request.Email,
             ct);
@@ -61,8 +59,7 @@ public sealed class AuthService : IAuthService
             UserName = request.Email,
             Email = request.Email,
             FullName = request.FullName,
-            StoreName = request.StoreName,
-            Role = role
+            Role = UserRole.Buyer
         };
 
         var result = await _userManager.CreateAsync(user, request.Password);

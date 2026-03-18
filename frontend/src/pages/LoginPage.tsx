@@ -2,6 +2,7 @@ import { FormEvent, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { login } from '../features/auth/authService';
 import { useAuth } from '../features/auth/AuthContext';
+import { getHomePath } from '../features/auth/roleUtils';
 
 function LoginPage() {
   const navigate = useNavigate();
@@ -18,7 +19,7 @@ function LoginPage() {
       return;
     }
     setAuth(result.token, result.email, result.role as 'Buyer' | 'Seller' | 'Admin');
-    navigate(result.role === 'Seller' ? '/seller' : '/buyer');
+    navigate(getHomePath(result.role));
   };
 
   return (

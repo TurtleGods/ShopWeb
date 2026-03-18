@@ -1,9 +1,6 @@
 import { Link } from 'react-router-dom';
 import { useAuth } from '../features/auth/AuthContext';
-
-function getHomePath(role?: string) {
-  return role === 'Seller' ? '/seller' : '/buyer';
-}
+import { getHomePath } from '../features/auth/roleUtils';
 
 export function TopBar() {
   const { user, logout } = useAuth();

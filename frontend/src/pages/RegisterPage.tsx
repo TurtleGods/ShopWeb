@@ -2,6 +2,7 @@ import { FormEvent, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { register } from '../features/auth/authService';
 import { useAuth } from '../features/auth/AuthContext';
+import { getHomePath } from '../features/auth/roleUtils';
 
 function RegisterPage() {
   const navigate = useNavigate();
@@ -25,13 +26,14 @@ function RegisterPage() {
     }
 
     setAuth(result.token, result.email, result.role as 'Buyer' | 'Seller' | 'Admin');
-    navigate(result.role === 'Seller' ? '/seller' : '/buyer');
+    navigate(getHomePath(result.role));
   };
 
   return (
     <main className="page">
       <section className="card">
         <h1>Register</h1>
+        <p className="sub-title">Public registration creates buyer accounts only. Seller accounts are created by the super admin.</p>
         <form onSubmit={onSubmit} className="form">
           <label>
             Email

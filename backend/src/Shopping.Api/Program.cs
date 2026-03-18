@@ -8,6 +8,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
+using Shopping.Api.Infrastructure;
+using Shopping.Api.Settings;
 using Shopping.Application.Services;
 using Shopping.Domain.Entities;
 using Shopping.Domain.Enums;
@@ -55,6 +57,8 @@ builder.Services.AddIdentityCore<User>(options =>
 builder.Services.AddScoped<IJwtTokenService, JwtTokenService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IImageStorageService, CloudinaryImageService>();
+builder.Services.AddScoped<SuperAdminSeeder>();
+builder.Services.Configure<SuperAdminSettings>(builder.Configuration.GetSection("SuperAdmin"));
 
 var jwtKey = builder.Configuration["Jwt:Key"];
 if (string.IsNullOrWhiteSpace(jwtKey))
@@ -87,6 +91,12 @@ builder.Services.AddAuthorization(options =>
 });
 
 var app = builder.Build();
+
+using (var scope = app.Services.CreateScope())
+{
+    var superAdminSeeder = scope.ServiceProvider.GetRequiredService<SuperAdminSeeder>();
+    await superAdminSeeder.SeedAsync();
+}
 
 if (app.Environment.IsDevelopment())
 {
