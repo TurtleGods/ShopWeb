@@ -6,8 +6,8 @@ import { useAuth } from '../features/auth/AuthContext';
 function LoginPage() {
   const navigate = useNavigate();
   const { login: setAuth } = useAuth();
-  const [email, setEmail] = useState('seller@example.com');
-  const [password, setPassword] = useState('password');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [message, setMessage] = useState('');
 
   const onSubmit = async (event: FormEvent<HTMLFormElement>) => {
@@ -28,11 +28,18 @@ function LoginPage() {
         <form onSubmit={onSubmit} className="form">
           <label>
             Email
-            <input value={email} onChange={(e) => setEmail(e.target.value)} required />
+            <input
+              value={email}
+              placeholder="Example@example.com"
+              onChange={(e) => setEmail(e.target.value)}
+              required
+            />
           </label>
           <label>
             Password
-            <input value={password} type="password" onChange={(e) => setPassword(e.target.value)} required />
+            <input value={password} type="password" 
+              placeholder="Password"
+              onChange={(e) => setPassword(e.target.value)} required />
           </label>
           {message && <p className="message">{message}</p>}
           <button type="submit">Continue</button>

@@ -6,10 +6,9 @@ import { useAuth } from '../features/auth/AuthContext';
 function RegisterPage() {
   const navigate = useNavigate();
   const { login: setAuth } = useAuth();
-  const [email, setEmail] = useState('buyer@example.com');
-  const [password, setPassword] = useState('password');
-  const [fullName, setFullName] = useState('New User');
-  const [storeName, setStoreName] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [fullName, setFullName] = useState('');
   const [message, setMessage] = useState('');
 
   const onSubmit = async (event: FormEvent<HTMLFormElement>) => {
@@ -17,8 +16,7 @@ function RegisterPage() {
     const result = await register({
       email,
       password,
-      fullName,
-      storeName: storeName.trim() || undefined
+      fullName
     });
 
     if (!result.succeeded || !result.token || !result.role || !result.email) {
@@ -37,7 +35,7 @@ function RegisterPage() {
         <form onSubmit={onSubmit} className="form">
           <label>
             Email
-            <input value={email} onChange={(event) => setEmail(event.target.value)} required />
+            <input value={email} onChange={(event) => setEmail(event.target.value)} placeholder="Example@example.com" required />
           </label>
           <label>
             Password
@@ -45,20 +43,13 @@ function RegisterPage() {
               value={password}
               type="password"
               onChange={(event) => setPassword(event.target.value)}
+              placeholder="Password"
               required
             />
           </label>
           <label>
             Full name
-            <input value={fullName} onChange={(event) => setFullName(event.target.value)} required />
-          </label>
-          <label>
-            Store name
-            <input
-              value={storeName}
-              onChange={(event) => setStoreName(event.target.value)}
-              placeholder="Leave blank for buyer account"
-            />
+            <input value={fullName}  onChange={(event) => setFullName(event.target.value)} placeholder="Full Name" required />
           </label>
           {message && <p className="message">{message}</p>}
           <button type="submit">Continue</button>
