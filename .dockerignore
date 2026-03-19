@@ -1,0 +1,12 @@
+.git
+.github
+.vscode
+**/bin
+**/obj
+**/node_modules
+**/dist
+README.md
+Agent.md
+docker-compose.yml
+.env
+.env.example
