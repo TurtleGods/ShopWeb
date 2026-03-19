@@ -30,18 +30,27 @@ function RegisterPage() {
   };
 
   return (
-    <main className="page">
-      <section className="card">
-        <h1>Register</h1>
-        <p className="sub-title">Public registration creates buyer accounts only. Seller accounts are created by the super admin.</p>
-        <form onSubmit={onSubmit} className="form">
-          <label>
+    <main className="mx-auto max-w-md">
+      <section className="rounded-3xl border border-slate-200 bg-white/95 p-8 shadow-[0_16px_48px_rgba(15,23,42,0.08)]">
+        <h1 className="text-3xl font-semibold tracking-tight text-slate-900">Register</h1>
+        <p className="mt-2 text-sm text-slate-500">
+          Public registration creates buyer accounts only. Seller accounts are created by the super admin.
+        </p>
+        <form onSubmit={onSubmit} className="mt-6 grid gap-4">
+          <label className="grid gap-1.5 text-sm font-medium text-slate-700">
             Email
-            <input value={email} onChange={(event) => setEmail(event.target.value)} placeholder="Example@example.com" required />
+            <input
+              className="w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-slate-900 outline-none transition focus:border-blue-400 focus:ring-4 focus:ring-blue-100"
+              value={email}
+              onChange={(event) => setEmail(event.target.value)}
+              placeholder="Example@example.com"
+              required
+            />
           </label>
-          <label>
+          <label className="grid gap-1.5 text-sm font-medium text-slate-700">
             Password
             <input
+              className="w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-slate-900 outline-none transition focus:border-blue-400 focus:ring-4 focus:ring-blue-100"
               value={password}
               type="password"
               onChange={(event) => setPassword(event.target.value)}
@@ -49,12 +58,23 @@ function RegisterPage() {
               required
             />
           </label>
-          <label>
+          <label className="grid gap-1.5 text-sm font-medium text-slate-700">
             Full name
-            <input value={fullName}  onChange={(event) => setFullName(event.target.value)} placeholder="Full Name" required />
+            <input
+              className="w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-slate-900 outline-none transition focus:border-blue-400 focus:ring-4 focus:ring-blue-100"
+              value={fullName}
+              onChange={(event) => setFullName(event.target.value)}
+              placeholder="Full Name"
+              required
+            />
           </label>
-          {message && <p className="message">{message}</p>}
-          <button type="submit">Continue</button>
+          {message && <p className="text-sm font-medium text-red-600">{message}</p>}
+          <button
+            type="submit"
+            className="inline-flex min-h-11 items-center justify-center rounded-xl bg-blue-600 px-4 text-sm font-semibold text-white transition hover:bg-blue-700"
+          >
+            Continue
+          </button>
         </form>
       </section>
     </main>

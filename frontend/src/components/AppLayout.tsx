@@ -3,9 +3,9 @@ import { TopBar } from './TopBar';
 
 export function AppLayout() {
   return (
-    <div className="app-shell">
+    <div className="min-h-screen">
       <TopBar />
-      <main className="layout-content">
+      <main className="px-4 py-8 md:px-6 md:py-10">
         <Outlet />
       </main>
     </div>

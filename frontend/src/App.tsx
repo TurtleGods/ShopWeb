@@ -1,7 +1,6 @@
 import { Navigate, Route, Routes } from 'react-router-dom';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
-import MainPage from './pages/MainPage';
 import AdminHomePage from './pages/AdminHomePage';
 import BuyerHomePage from './pages/BuyerHomePage';
 import SellerHomePage from './pages/SellerHomePage';
@@ -10,6 +9,7 @@ import { AppLayout } from './components/AppLayout';
 import { useAuth } from './features/auth/AuthContext';
 import { getHomePath } from './features/auth/roleUtils';
 import { ProtectedRoute } from './shared/ProtectedRoute';
+import MainPage from './pages/MainPage';
 
 function App() {
   const { user } = useAuth();
