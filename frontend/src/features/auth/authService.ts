@@ -95,13 +95,25 @@ export function useProducts(role: 'Buyer' | 'Seller') {
     return response.json();
   };
 
+  const deleteProduct = async (productId: number, token: string): Promise<void> => {
+    const response = await fetch(`${API_BASE}/api/products/${productId}`, {
+      method: 'DELETE',
+      headers: { Authorization: `Bearer ${token}` }
+    });
+
+    if (!response.ok) {
+      const data = await response.json().catch(() => null);
+      throw new Error(data?.message || 'Failed to delete product.');
+    }
+  };
+
   useEffect(() => {
     if (role) {
       void loadProducts();
     }
   }, [role]);
 
-  return { items, loading, loadProducts, createProduct, uploadProductImage };
+  return { items, loading, loadProducts, createProduct, uploadProductImage, deleteProduct };
 }
 
 export async function login(request: LoginRequest): Promise<ApiResponse> {

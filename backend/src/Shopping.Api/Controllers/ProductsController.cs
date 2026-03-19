@@ -130,4 +130,57 @@ public sealed class ProductsController : ControllerBase
 
         return Ok(new { image.Url, image.PublicId });
     }
+
+    [HttpDelete("{productId:int}")]
+    [Authorize(Policy = "SellerOnly")]
+    public async Task<IActionResult> Delete(int productId, CancellationToken ct)
+    {
+        var email = User.FindFirst(ClaimTypes.Email)?.Value;
+        var role = User.FindFirst(ClaimTypes.Role)?.Value;
+
+        if (string.IsNullOrWhiteSpace(email) || string.IsNullOrWhiteSpace(role))
+        {
+            return Unauthorized();
+        }
+
+        var product = await _db.Products
+            .Include(x => x.Images)
+            .FirstOrDefaultAsync(x => x.Id == productId, ct);
+
+        if (product is null)
+        {
+            return NotFound(new { message = "Product not found." });
+        }
+
+        var isAdmin = string.Equals(role, UserRole.Admin.ToString(), System.StringComparison.Ordinal);
+        if (!isAdmin)
+        {
+            var seller = await _db.Users.FirstOrDefaultAsync(x => x.Email == email && x.Role == UserRole.Seller, ct);
+            if (seller is null)
+            {
+                return Unauthorized();
+            }
+
+            if (product.SellerId != seller.Id)
+            {
+                return Forbid();
+            }
+        }
+
+        var hasOrders = await _db.OrderItems.AnyAsync(x => x.ProductId == productId, ct);
+        if (hasOrders)
+        {
+            return Conflict(new { message = "This product cannot be deleted because it already exists in an order." });
+        }
+
+        foreach (var image in product.Images)
+        {
+            await _imageStorageService.DeleteProductImageAsync(image.PublicId, ct);
+        }
+
+        _db.Products.Remove(product);
+        await _db.SaveChangesAsync(ct);
+
+        return NoContent();
+    }
 }

@@ -50,5 +50,30 @@ public sealed class CloudinaryImageService : IImageStorageService
 
         return (uploadResult.SecureUrl.ToString(), uploadResult.PublicId ?? string.Empty);
     }
+
+    public async Task DeleteProductImageAsync(string publicId, CancellationToken ct = default)
+    {
+        if (string.IsNullOrWhiteSpace(publicId))
+        {
+            return;
+        }
+
+        var deleteResult = await _cloudinary.DestroyAsync(new DeletionParams(publicId)
+        {
+            ResourceType = ResourceType.Image
+        });
+
+        if (deleteResult is null)
+        {
+            throw new InvalidOperationException("Cloudinary delete failed.");
+        }
+
+        var result = deleteResult.Result ?? string.Empty;
+        if (!string.Equals(result, "ok", StringComparison.OrdinalIgnoreCase) &&
+            !string.Equals(result, "not found", StringComparison.OrdinalIgnoreCase))
+        {
+            throw new InvalidOperationException($"Cloudinary delete failed: {result}");
+        }
+    }
 }
 

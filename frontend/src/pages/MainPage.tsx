@@ -87,7 +87,7 @@ function MainPage() {
                   {product.description}
                 </p>
                 <div className="flex items-center justify-between text-sm font-medium text-slate-700">
-                  <span>${product.price.toFixed(2)}</span>
+                  <span>${product.price}</span>
                   <span>Stock: {product.stock}</span>
                 </div>
               </div>

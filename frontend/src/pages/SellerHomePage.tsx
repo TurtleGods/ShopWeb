@@ -1,17 +1,33 @@
-import { FormEvent, useState } from 'react';
+import { FormEvent, useEffect, useState } from 'react';
 import { useAuth } from '../features/auth/AuthContext';
 import { ProductCreateRequest, useProducts } from '../features/auth/authService';
 
 function SellerHomePage() {
-  const { user} = useAuth();
-  const { items, loading, createProduct, uploadProductImage, loadProducts } = useProducts('Seller');
+  const { user } = useAuth();
+  const { items, loading, createProduct, uploadProductImage, deleteProduct, loadProducts } = useProducts('Seller');
   const [name, setName] = useState('New product');
   const [description, setDescription] = useState('A short description');
   const [price, setPrice] = useState(10);
   const [stock, setStock] = useState(100);
   const [files, setFiles] = useState<File[]>([]);
+  const [previewUrls, setPreviewUrls] = useState<string[]>([]);
   const [submitting, setSubmitting] = useState(false);
+  const [deletingProductId, setDeletingProductId] = useState<number | null>(null);
   const [message, setMessage] = useState('');
+
+  useEffect(() => {
+    if (files.length === 0) {
+      setPreviewUrls([]);
+      return;
+    }
+
+    const urls = files.map((file) => URL.createObjectURL(file));
+    setPreviewUrls(urls);
+
+    return () => {
+      urls.forEach((url) => URL.revokeObjectURL(url));
+    };
+  }, [files]);
 
   const submit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -41,6 +57,23 @@ function SellerHomePage() {
       setMessage((error as Error).message || 'Failed to create product.');
     } finally {
       setSubmitting(false);
+    }
+  };
+
+  const removeProduct = async (productId: number) => {
+    if (!user?.token) return;
+
+    setDeletingProductId(productId);
+    setMessage('');
+
+    try {
+      await deleteProduct(productId, user.token);
+      await loadProducts();
+      setMessage('Product deleted.');
+    } catch (error) {
+      setMessage((error as Error).message || 'Failed to delete product.');
+    } finally {
+      setDeletingProductId(null);
     }
   };
 
@@ -102,13 +135,20 @@ function SellerHomePage() {
             />
           </label>
           {files.length > 0 ? (
-            <div className="flex flex-wrap gap-2">
-              {files.map((file) => (
+            <div className="grid grid-cols-2 gap-3 md:grid-cols-3 xl:grid-cols-4">
+              {files.map((file, index) => (
                 <div
                   key={`${file.name}-${file.lastModified}`}
-                  className="rounded-full border border-blue-200 bg-blue-50 px-3 py-1.5 text-sm font-medium text-blue-700"
+                  className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm"
                 >
-                  {file.name}
+                  <img
+                    src={previewUrls[index]}
+                    alt={file.name}
+                    className="h-36 w-full bg-slate-100 object-cover"
+                  />
+                  <div className="border-t border-slate-100 px-3 py-2 text-sm font-medium text-slate-700">
+                    {file.name}
+                  </div>
                 </div>
               ))}
             </div>
@@ -147,6 +187,14 @@ function SellerHomePage() {
                 <p className="text-sm text-slate-500">
                   {item.images.length} image{item.images.length === 1 ? '' : 's'}
                 </p>
+                <button
+                  type="button"
+                  onClick={() => void removeProduct(item.id)}
+                  disabled={deletingProductId === item.id}
+                  className="inline-flex min-h-10 items-center justify-center rounded-xl bg-red-600 px-4 text-sm font-semibold text-white transition hover:bg-red-700 disabled:cursor-not-allowed disabled:opacity-60"
+                >
+                  {deletingProductId === item.id ? 'Deleting...' : 'Delete product'}
+                </button>
               </div>
             </article>
           ))}
