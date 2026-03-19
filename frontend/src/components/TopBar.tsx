@@ -7,7 +7,9 @@ export function TopBar() {
 
   return (
     <header className="topbar">
-      <div className="brand">Shop Web</div>
+      <Link to="/" className="brand">
+        Shop Web
+      </Link>
 
       {user ? (
         <div className="topbar-actions">

@@ -37,6 +37,7 @@ public sealed class CloudinaryImageService : IImageStorageService
         var parameters = new ImageUploadParams
         {
             File = new FileDescription(fileName, fileStream),
+            Transformation = new Transformation().Width(1600).Height(1600).Crop("limit").Quality("auto").FetchFormat("auto"),
             Folder = string.IsNullOrWhiteSpace(prefix) ? "shop-products" : prefix
         };
 
