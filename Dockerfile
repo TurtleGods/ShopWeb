@@ -9,7 +9,7 @@ RUN npm install @rollup/rollup-linux-x64-gnu --no-save
 COPY frontend ./
 RUN npm run build
 
-FROM mcr.microsoft.com/dotnet/sdk:10.0 AS backend-build
+FROM mcr.microsoft.com/dotnet/sdk:9.0 AS backend-build
 WORKDIR /src
 
 COPY backend/src/Shopping.Api/Shopping.Api.csproj backend/src/Shopping.Api/
@@ -23,7 +23,7 @@ COPY backend/src ./backend/src
 
 RUN dotnet publish backend/src/Shopping.Api/Shopping.Api.csproj -c Release -o /app/publish
 
-FROM mcr.microsoft.com/dotnet/aspnet:10.0
+FROM mcr.microsoft.com/dotnet/aspnet:9.0
 WORKDIR /app
 ENV ASPNETCORE_URLS=http://+:8080
 
