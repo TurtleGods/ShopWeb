@@ -26,7 +26,6 @@ RUN dotnet publish backend/src/Shopping.Api/Shopping.Api.csproj -c Release -o /a
 FROM mcr.microsoft.com/dotnet/aspnet:9.0
 WORKDIR /app
 ENV ASPNETCORE_URLS=http://+:8080
-ENV DOTNET_SYSTEM_NET_DISABLEIPV6=1
 
 COPY --from=backend-build /app/publish .
 COPY --from=frontend-build /frontend/dist ./wwwroot
