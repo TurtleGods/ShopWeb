@@ -32,10 +32,7 @@ function RegisterPage() {
   return (
     <main className="mx-auto max-w-md">
       <section className="rounded-3xl border border-slate-200 bg-white/95 p-8 shadow-[0_16px_48px_rgba(15,23,42,0.08)]">
-        <h1 className="text-3xl font-semibold tracking-tight text-slate-900">Register</h1>
-        <p className="mt-2 text-sm text-slate-500">
-          Public registration creates buyer accounts only. Seller accounts are created by the super admin.
-        </p>
+        <h1 className="text-3xl font-semibold tracking-tight text-slate-900">註冊</h1>
         <form onSubmit={onSubmit} className="mt-6 grid gap-4">
           <label className="grid gap-1.5 text-sm font-medium text-slate-700">
             Email
@@ -48,7 +45,7 @@ function RegisterPage() {
             />
           </label>
           <label className="grid gap-1.5 text-sm font-medium text-slate-700">
-            Password
+            密碼
             <input
               className="w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-slate-900 outline-none transition focus:border-blue-400 focus:ring-4 focus:ring-blue-100"
               value={password}
@@ -59,7 +56,7 @@ function RegisterPage() {
             />
           </label>
           <label className="grid gap-1.5 text-sm font-medium text-slate-700">
-            Full name
+            全名
             <input
               className="w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-slate-900 outline-none transition focus:border-blue-400 focus:ring-4 focus:ring-blue-100"
               value={fullName}
@@ -73,7 +70,7 @@ function RegisterPage() {
             type="submit"
             className="inline-flex min-h-11 items-center justify-center rounded-xl bg-blue-600 px-4 text-sm font-semibold text-white transition hover:bg-blue-700"
           >
-            Continue
+            確認
           </button>
         </form>
       </section>

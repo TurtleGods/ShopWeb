@@ -88,7 +88,7 @@ function MainPage() {
                 </p>
                 <div className="flex items-center justify-between text-sm font-medium text-slate-700">
                   <span>${product.price}</span>
-                  <span>Stock: {product.stock}</span>
+                  <span>庫存: {product.stock}</span>
                 </div>
               </div>
             </article>

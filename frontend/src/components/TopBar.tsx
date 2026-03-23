@@ -9,7 +9,7 @@ export function TopBar() {
     <header className="sticky top-0 z-20 border-b border-slate-200/80 bg-white/90 backdrop-blur">
       <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-3 px-4 py-4 md:px-6">
         <Link to="/" className="text-lg font-semibold tracking-tight text-slate-900 transition hover:text-blue-600">
-          Shop Web
+          購物網站
         </Link>
 
         {user ? (
@@ -21,13 +21,13 @@ export function TopBar() {
               to={getHomePath(user.role)}
               className="inline-flex min-h-10 items-center justify-center rounded-xl border border-slate-200 bg-white px-4 text-sm font-semibold text-slate-800 transition hover:border-blue-200 hover:bg-blue-50 hover:text-blue-700"
             >
-              My Page
+              會員頁面
             </Link>
             <button
               onClick={logout}
               className="inline-flex min-h-10 items-center justify-center rounded-xl bg-blue-600 px-4 text-sm font-semibold text-white transition hover:bg-blue-700"
             >
-              Logout
+              登出
             </button>
           </div>
         ) : (
@@ -36,13 +36,13 @@ export function TopBar() {
               to="/login"
               className="inline-flex min-h-10 items-center justify-center rounded-xl border border-slate-200 bg-white px-4 text-sm font-semibold text-slate-800 transition hover:border-blue-200 hover:bg-blue-50 hover:text-blue-700"
             >
-              Login
+              登入
             </Link>
             <Link
               to="/register"
               className="inline-flex min-h-10 items-center justify-center rounded-xl bg-blue-600 px-4 text-sm font-semibold text-white transition hover:bg-blue-700"
             >
-              Register
+              註冊
             </Link>
           </div>
         )}

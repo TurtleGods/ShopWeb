@@ -81,13 +81,12 @@ function SellerHomePage() {
     <main className="mx-auto max-w-6xl">
       <section className="rounded-3xl border border-slate-200 bg-white/95 p-8 shadow-[0_16px_48px_rgba(15,23,42,0.08)]">
         <div className="mb-8">
-          <h1 className="text-3xl font-semibold tracking-tight text-slate-900">Seller Dashboard</h1>
-          <p className="mt-2 text-sm text-slate-500">Manage products for {user?.email}</p>
+          <h1 className="text-3xl font-semibold tracking-tight text-slate-900">賣家儀表板</h1>
         </div>
 
         <form onSubmit={submit} className="grid gap-4 rounded-2xl border border-slate-200 bg-slate-50/70 p-5">
           <label className="grid gap-1.5 text-sm font-medium text-slate-700">
-            Product name
+            商品名稱
             <input
               className="w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-slate-900 outline-none transition focus:border-blue-400 focus:ring-4 focus:ring-blue-100"
               value={name}
@@ -96,7 +95,7 @@ function SellerHomePage() {
             />
           </label>
           <label className="grid gap-1.5 text-sm font-medium text-slate-700">
-            Description
+            描述
             <textarea
               className="min-h-28 w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-slate-900 outline-none transition focus:border-blue-400 focus:ring-4 focus:ring-blue-100"
               value={description}
@@ -105,7 +104,7 @@ function SellerHomePage() {
           </label>
           <div className="grid gap-4 md:grid-cols-2">
             <label className="grid gap-1.5 text-sm font-medium text-slate-700">
-              Price
+              價格
               <input
                 className="w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-slate-900 outline-none transition focus:border-blue-400 focus:ring-4 focus:ring-blue-100"
                 value={price}
@@ -115,7 +114,7 @@ function SellerHomePage() {
               />
             </label>
             <label className="grid gap-1.5 text-sm font-medium text-slate-700">
-              Stock
+              庫存量
               <input
                 className="w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-slate-900 outline-none transition focus:border-blue-400 focus:ring-4 focus:ring-blue-100"
                 value={stock}
@@ -125,7 +124,7 @@ function SellerHomePage() {
             </label>
           </div>
           <label className="grid gap-1.5 text-sm font-medium text-slate-700">
-            Product images
+            商品圖片
             <input
               className="block w-full rounded-xl border border-dashed border-slate-300 bg-white px-4 py-3 text-sm text-slate-500 file:mr-4 file:rounded-lg file:border-0 file:bg-blue-50 file:px-3 file:py-2 file:text-sm file:font-semibold file:text-blue-700 hover:file:bg-blue-100"
               type="file"
@@ -164,7 +163,7 @@ function SellerHomePage() {
         </form>
 
         <div className="mt-8 flex items-center justify-between gap-4">
-          <h2 className="text-2xl font-semibold tracking-tight text-slate-900">Products</h2>
+          <h2 className="text-2xl font-semibold tracking-tight text-slate-900">產品</h2>
           {loading ? <p className="text-sm text-slate-500">Loading...</p> : null}
         </div>
         <div className="mt-4 grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
@@ -182,7 +181,7 @@ function SellerHomePage() {
                 <p className="text-sm leading-6 text-slate-600">{item.description}</p>
                 <div className="flex items-center justify-between text-sm font-medium text-slate-700">
                   <span>${item.price}</span>
-                  <span>Stock: {item.stock}</span>
+                  <span>庫存: {item.stock}</span>
                 </div>
                 <p className="text-sm text-slate-500">
                   {item.images.length} image{item.images.length === 1 ? '' : 's'}
