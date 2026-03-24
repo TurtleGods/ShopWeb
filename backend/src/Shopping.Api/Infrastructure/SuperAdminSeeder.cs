@@ -29,11 +29,12 @@ public sealed class SuperAdminSeeder
         var existing = await _userManager.FindByEmailAsync(_settings.Email);
         if (existing is not null)
         {
-            if (existing.Role != UserRole.Admin || !existing.IsActive || existing.FullName != _settings.FullName)
+            if (existing.Role != UserRole.Admin || !existing.IsActive || existing.PublicUserId != _settings.PublicUserId)
             {
                 existing.Role = UserRole.Admin;
                 existing.IsActive = true;
-                existing.FullName = _settings.FullName;
+                existing.PublicUserId = _settings.PublicUserId;
+                existing.UserName = _settings.PublicUserId;
                 await _userManager.UpdateAsync(existing);
             }
 
@@ -42,9 +43,9 @@ public sealed class SuperAdminSeeder
 
         var admin = new User
         {
-            UserName = _settings.Email,
+            UserName = _settings.PublicUserId,
             Email = _settings.Email,
-            FullName = _settings.FullName,
+            PublicUserId = _settings.PublicUserId,
             Role = UserRole.Admin,
             IsActive = true
         };

@@ -2,7 +2,6 @@ import { FormEvent, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { login } from '../features/auth/authService';
 import { useAuth } from '../features/auth/AuthContext';
-import { getHomePath } from '../features/auth/roleUtils';
 
 function LoginPage() {
   const navigate = useNavigate();
@@ -14,12 +13,13 @@ function LoginPage() {
   const onSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const result = await login({ email, password });
-    if (!result.succeeded || !result.token || !result.role || !result.email) {
+    if (!result.succeeded || !result.token || !result.role || !result.email || !result.publicUserId) {
       setMessage(result.message || 'Login failed');
       return;
     }
-    setAuth(result.token, result.email, result.role as 'Buyer' | 'Seller' | 'Admin');
-    navigate(getHomePath(result.role));
+
+    setAuth(result.token, result.email, result.role as 'Seller' | 'Admin', result.publicUserId);
+    navigate(result.role === 'Admin' ? '/admin' : `/${result.publicUserId}`);
   };
 
   return (
