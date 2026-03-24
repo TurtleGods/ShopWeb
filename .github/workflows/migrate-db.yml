@@ -1,0 +1,48 @@
+  name: Migrate Database                                                                                                                                                            
+                                                                                                                                                                                    
+  on:                                                                                                                                                                               
+    workflow_dispatch:                                                                                                                                                              
+                                                                                                                                                                                    
+  jobs:                                                                                                                                                                             
+    migrate:                                                                                                                                                                        
+      runs-on: ubuntu-latest                                                                                                                                                        
+      permissions:                                                                                                                                                                  
+        contents: read                                                                                                                                                              
+        id-token: write                                                                                                                                                             
+                                                                                                                                                                                    
+      steps:
+        - name: Checkout                                                                                                                                                            
+          uses: actions/checkout@v4                                                                                                                                                 
+                                                                                                                                                                                    
+        - name: Authenticate to Google Cloud                                                                                                                                        
+          id: auth                                                                                                                                                                  
+          uses: google-github-actions/auth@v3                                                                                                                                       
+          with:                                                                                                                                                                     
+            workload_identity_provider: ${{ secrets.GCP_WORKLOAD_IDENTITY_PROVIDER }}                                                                                               
+            service_account: ${{ secrets.MigrationServiceAccount }}                                                                                                                     
+                                                                                                                                                                                    
+        - name: Fetch secrets from Secret Manager                                                                                                                                   
+          id: secrets                                                                                                                                                               
+          uses: google-github-actions/get-secretmanager-secrets@v3                                                                                                                  
+          with:                                                                                                                                                                     
+            export_to_environment: true                                                                                                                                             
+            secrets: |-                                                                                                                                                             
+              ConnectionStrings__DefaultConnection:${{ secrets.GCP_PROJECT_ID }}/DB_CONNECTION                                                                                                                                                                                
+                                                                                                                                                                                    
+        - name: Setup .NET                                                                                                                                                          
+          uses: actions/setup-dotnet@v4                                                                                                                                             
+          with:                                                                                                                                                                     
+            dotnet-version: 9.0.x                                                                                                                                                   
+                                                                                                                                                                                    
+        - name: Install EF CLI
+          run: dotnet tool install --global dotnet-ef                                                                                                                               
+                                                                                                                                                                                    
+        - name: Add dotnet tools to PATH                                                                                                                                            
+          run: echo "$HOME/.dotnet/tools" >> $GITHUB_PATH                                                                                                                           
+                                                                                                                                                                                    
+        - name: Run EF database update                                                                                                                                              
+          working-directory: backend                                                                                                                                                
+          env:                                                                                                                                                                      
+            Jwt__Issuer: ShoppingApi                                                                                                                                                
+            Jwt__Audience: ShoppingClient                                                                                                                                           
+          run: dotnet ef database update --project ./src/Shopping.Infrastructure/Shopping.Infrastructure.csproj --startup-project ./src/Shopping.Api/Shopping.Api.csproj     
