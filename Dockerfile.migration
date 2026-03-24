@@ -1,0 +1,17 @@
+FROM mcr.microsoft.com/dotnet/sdk:9.0
+
+WORKDIR /src
+
+COPY backend/src/Shopping.Api/Shopping.Api.csproj backend/src/Shopping.Api/
+COPY backend/src/Shopping.Application/Shopping.Application.csproj backend/src/Shopping.Application/
+COPY backend/src/Shopping.Domain/Shopping.Domain.csproj backend/src/Shopping.Domain/
+COPY backend/src/Shopping.Infrastructure/Shopping.Infrastructure.csproj backend/src/Shopping.Infrastructure/
+
+RUN dotnet restore backend/src/Shopping.Api/Shopping.Api.csproj
+RUN dotnet tool install --global dotnet-ef
+
+COPY backend/src ./backend/src
+
+ENV PATH="${PATH}:/root/.dotnet/tools"
+
+ENTRYPOINT ["dotnet", "ef", "database", "update", "--project", "/src/backend/src/Shopping.Infrastructure/Shopping.Infrastructure.csproj", "--startup-project", "/src/backend/src/Shopping.Api/Shopping.Api.csproj"]
