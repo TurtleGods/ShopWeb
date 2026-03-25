@@ -23,7 +23,7 @@ public sealed class OrdersController : ControllerBase
     }
 
     [HttpPost("buyer")]
-    [Authorize(Policy = "BuyerOnly")]
+    [Authorize]
     public async Task<IActionResult> BuyerPage(CancellationToken ct)
     {
         var email = User.FindFirst(ClaimTypes.Email)?.Value;
@@ -32,13 +32,13 @@ public sealed class OrdersController : ControllerBase
             return Unauthorized();
         }
 
-        var buyer = await _db.Users.FirstOrDefaultAsync(x => x.Email == email && x.Role == UserRole.Buyer, ct);
-        if (buyer is null)
+        var user = await _db.Users.FirstOrDefaultAsync(x => x.Email == email && x.IsActive, ct);
+        if (user is null)
         {
             return Unauthorized();
         }
 
-        return Ok(new { message = "Order flow placeholder", buyerId = buyer.Id });
+        return Ok(new { message = "Order flow placeholder", buyerId = user.Id });
     }
 
     [HttpGet("seller")]

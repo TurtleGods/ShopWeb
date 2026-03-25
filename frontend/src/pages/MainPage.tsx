@@ -1,36 +1,19 @@
-import { useEffect, useState } from "react";
-
-type ProductImage = {
-  url: string;
-};
-
-type Product = {
-  id: number;
-  name: string;
-  description?: string;
-  price: number;
-  stock: number;
-  images: ProductImage[];
-};
-
-const API_BASE = import.meta.env.VITE_API_URL ?? "";
+import { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
+import { getProducts, ProductSummary } from '../features/auth/authService';
 
 function MainPage() {
-  const [products, setProducts] = useState<Product[]>([]);
+  const [products, setProducts] = useState<ProductSummary[]>([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
+  const [error, setError] = useState('');
 
   useEffect(() => {
     const load = async () => {
       try {
-        const response = await fetch(`${API_BASE}/api/products`);
-        if (!response.ok) {
-          throw new Error("產品清單載入失敗");
-        }
-        const data = await response.json();
-        setProducts(Array.isArray(data) ? data : []);
+        const data = await getProducts();
+        setProducts(data);
       } catch (e) {
-        setError((e as Error).message || "載入失敗");
+        setError((e as Error).message || '載入失敗');
       } finally {
         setLoading(false);
       }
@@ -43,11 +26,9 @@ function MainPage() {
     <main className="mx-auto max-w-6xl">
       <section className="rounded-3xl border border-slate-200 bg-white/95 p-8 shadow-[0_16px_48px_rgba(15,23,42,0.08)]">
         <div className="mb-8">
-          <h1 className="text-4xl font-semibold tracking-tight text-slate-900">
-            Shop Web
-          </h1>
+          <h1 className="text-4xl font-semibold tracking-tight text-slate-900">Pigeon Packet</h1>
           <p className="mt-3 max-w-2xl text-sm leading-6 text-slate-500">
-            歡迎來到商城，先逛商品，不需先登入。
+            Browse products from every user page, or claim your own unique URL and start listing items.
           </p>
         </div>
 
@@ -80,12 +61,15 @@ function MainPage() {
                 </div>
               )}
               <div className="space-y-2 p-5">
-                <h3 className="text-lg font-semibold text-slate-900">
-                  {product.name}
-                </h3>
-                <p className="text-sm leading-6 text-slate-600">
-                  {product.description}
-                </p>
+                <div className="flex items-center justify-between gap-3">
+                  <h3 className="text-lg font-semibold text-slate-900">{product.name}</h3>
+                  {product.sellerPublicUserId ? (
+                    <Link to={`/${product.sellerPublicUserId}`} className="text-sm font-medium text-blue-600 hover:text-blue-700">
+                      @{product.sellerPublicUserId}
+                    </Link>
+                  ) : null}
+                </div>
+                <p className="text-sm leading-6 text-slate-600">{product.description}</p>
                 <div className="flex items-center justify-between text-sm font-medium text-slate-700">
                   <span>${product.price}</span>
                   <span>庫存: {product.stock}</span>

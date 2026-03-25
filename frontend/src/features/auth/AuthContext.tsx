@@ -1,16 +1,17 @@
 import { createContext, useContext, useEffect, useMemo, useState } from 'react';
 
-type Role = 'Buyer' | 'Seller' | 'Admin';
+type Role = 'Seller' | 'Admin';
 
 type AuthUser = {
   token: string;
   email: string;
   role: Role;
+  publicUserId: string;
 };
 
 type AuthContextType = {
   user: AuthUser | null;
-  login: (token: string, email: string, role: Role) => void;
+  login: (token: string, email: string, role: Role, publicUserId: string) => void;
   logout: () => void;
 };
 
@@ -28,8 +29,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   }, []);
 
-  const login = (token: string, email: string, role: Role) => {
-    const nextUser: AuthUser = { token, email, role };
+  const login = (token: string, email: string, role: Role, publicUserId: string) => {
+    const nextUser: AuthUser = { token, email, role, publicUserId };
     localStorage.setItem(STORAGE_KEY, JSON.stringify(nextUser));
     setUser(nextUser);
   };
@@ -51,4 +52,3 @@ export function useAuth() {
   }
   return ctx;
 }
-

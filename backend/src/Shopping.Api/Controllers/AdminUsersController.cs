@@ -32,9 +32,8 @@ public sealed class AdminUsersController : ControllerBase
             {
                 x.Id,
                 x.Email,
-                x.FullName,
+                x.PublicUserId,
                 Role = x.Role.ToString(),
-                x.StoreName,
                 x.IsActive
             })
             .ToListAsync(ct);
@@ -45,23 +44,29 @@ public sealed class AdminUsersController : ControllerBase
     [HttpPost("seller")]
     public async Task<IActionResult> CreateSeller([FromBody] CreateSellerRequest request, CancellationToken ct)
     {
-        if (string.IsNullOrWhiteSpace(request.StoreName))
+        var publicUserId = request.PublicUserId.Trim().ToLowerInvariant();
+        if (string.IsNullOrWhiteSpace(publicUserId))
         {
-            return BadRequest(new { message = "Store name is required." });
+            return BadRequest(new { message = "Public user ID is required." });
         }
 
-        var exists = await _userManager.Users.AnyAsync(x => x.Email == request.Email, ct);
-        if (exists)
+        var emailExists = await _userManager.Users.AnyAsync(x => x.Email == request.Email, ct);
+        if (emailExists)
         {
             return BadRequest(new { message = "Email already exists." });
         }
 
+        var publicUserIdExists = await _userManager.Users.AnyAsync(x => x.PublicUserId == publicUserId, ct);
+        if (publicUserIdExists)
+        {
+            return BadRequest(new { message = "Public user ID already exists." });
+        }
+
         var seller = new User
         {
-            UserName = request.Email,
+            UserName = publicUserId,
             Email = request.Email,
-            FullName = request.FullName,
-            StoreName = request.StoreName,
+            PublicUserId = publicUserId,
             Role = UserRole.Seller,
             IsActive = true
         };
@@ -76,9 +81,8 @@ public sealed class AdminUsersController : ControllerBase
         {
             seller.Id,
             seller.Email,
-            seller.FullName,
+            seller.PublicUserId,
             Role = seller.Role.ToString(),
-            seller.StoreName,
             seller.IsActive
         });
     }
@@ -103,9 +107,8 @@ public sealed class AdminUsersController : ControllerBase
         {
             user.Id,
             user.Email,
-            user.FullName,
+            user.PublicUserId,
             Role = user.Role.ToString(),
-            user.StoreName,
             user.IsActive
         });
     }

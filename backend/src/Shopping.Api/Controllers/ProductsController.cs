@@ -32,6 +32,7 @@ public sealed class ProductsController : ControllerBase
     {
         var all = await _db.Products
             .Include(x => x.Images)
+            .Include(x => x.Seller)
             .Select(x => new
             {
                 x.Id,
@@ -41,11 +42,48 @@ public sealed class ProductsController : ControllerBase
                 x.Stock,
                 x.IsPublished,
                 x.SellerId,
+                SellerPublicUserId = x.Seller.PublicUserId,
                 Images = x.Images.Select(i => new { i.Url, i.PublicId }).ToList()
             })
             .ToListAsync(ct);
 
         return Ok(all);
+    }
+
+    [HttpGet("user/{publicUserId}")]
+    public async Task<IActionResult> ListByUserId(string publicUserId, CancellationToken ct)
+    {
+        var normalizedPublicUserId = publicUserId.Trim().ToLowerInvariant();
+        var seller = await _db.Users
+            .FirstOrDefaultAsync(x => x.PublicUserId == normalizedPublicUserId && x.IsActive && x.Role == UserRole.Seller, ct);
+
+        if (seller is null)
+        {
+            return NotFound(new { message = "User page not found." });
+        }
+
+        var products = await _db.Products
+            .Where(x => x.SellerId == seller.Id)
+            .Include(x => x.Images)
+            .Select(x => new
+            {
+                x.Id,
+                x.Name,
+                x.Description,
+                x.Price,
+                x.Stock,
+                x.IsPublished,
+                x.SellerId,
+                SellerPublicUserId = seller.PublicUserId,
+                Images = x.Images.Select(i => new { i.Url, i.PublicId }).ToList()
+            })
+            .ToListAsync(ct);
+
+        return Ok(new
+        {
+            seller.PublicUserId,
+            Products = products
+        });
     }
 
     [HttpPost]
@@ -60,7 +98,7 @@ public sealed class ProductsController : ControllerBase
             return Forbid();
         }
 
-        var seller = await _db.Users.FirstOrDefaultAsync(x => x.Email == emailClaim && x.Role == UserRole.Seller, ct);
+        var seller = await _db.Users.FirstOrDefaultAsync(x => x.Email == emailClaim && x.Role == UserRole.Seller && x.IsActive, ct);
         if (seller is null)
         {
             return Unauthorized();
@@ -87,6 +125,7 @@ public sealed class ProductsController : ControllerBase
             product.Stock,
             product.IsPublished,
             product.SellerId,
+            SellerPublicUserId = seller.PublicUserId,
             Images = new object[0]
         });
     }
@@ -109,7 +148,7 @@ public sealed class ProductsController : ControllerBase
             return Unauthorized();
         }
 
-        var seller = await _db.Users.FirstOrDefaultAsync(x => x.Email == email && x.Role == UserRole.Seller, ct);
+        var seller = await _db.Users.FirstOrDefaultAsync(x => x.Email == email && x.Role == UserRole.Seller && x.IsActive, ct);
         if (seller is null)
         {
             return Unauthorized();
@@ -155,7 +194,7 @@ public sealed class ProductsController : ControllerBase
         var isAdmin = string.Equals(role, UserRole.Admin.ToString(), System.StringComparison.Ordinal);
         if (!isAdmin)
         {
-            var seller = await _db.Users.FirstOrDefaultAsync(x => x.Email == email && x.Role == UserRole.Seller, ct);
+            var seller = await _db.Users.FirstOrDefaultAsync(x => x.Email == email && x.Role == UserRole.Seller && x.IsActive, ct);
             if (seller is null)
             {
                 return Unauthorized();

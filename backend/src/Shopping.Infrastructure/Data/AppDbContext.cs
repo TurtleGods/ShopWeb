@@ -25,6 +25,12 @@ public sealed class AppDbContext(DbContextOptions<AppDbContext> options)
             entity.Property(p => p.Price).HasPrecision(10, 2);
         });
 
+        modelBuilder.Entity<User>(entity =>
+        {
+            entity.HasIndex(u => u.PublicUserId).IsUnique();
+            entity.Property(u => u.PublicUserId).HasMaxLength(50);
+        });
+
         modelBuilder.Entity<OrderItem>(entity =>
         {
             entity.Property(i => i.Subtotal).HasPrecision(10, 2);
